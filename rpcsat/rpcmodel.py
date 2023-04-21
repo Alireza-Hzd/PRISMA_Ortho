@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
+#import statsmodels.api as sm
 import numpy.linalg as la
 import matplotlib.pyplot as plt
-import pygeodesy as geo
+#import pygeodesy as geo
 import xml.etree.ElementTree as et
-
+import h5py
 
 class RPCmodel():
 
@@ -105,6 +105,28 @@ class RPCmodel():
 
     def read_from_PRISMA_h5(self, h5_file):
 
+        sensor = "PRISMA"
+
+        f = h5py.File(h5_file, 'r')
+
+        rpc = f['HDFEOS']['SWATHS']['PRS_L2C_PCO']['Geocoding Model']
+
+        self.SAMP_Num_coeff = rpc.attrs.get('SAMP_NUM_COEFF')
+        self.SAMP_Den_coeff = rpc.attrs.get('SAMP_DEN_COEFF')
+        self.LINE_Num_coeff = rpc.attrs.get('LINE_NUM_COEFF')
+        self.LINE_Den_coeff = rpc.attrs.get('LINE_DEN_COEFF')
+
+        self.LONG_SCALE = rpc.attrs.get('LONG_SCALE')
+        self.LONG_OFF = rpc.attrs.get('LONG_OFF')
+        self.LAT_SCALE = rpc.attrs.get('LAT_SCALE')
+        self.LAT_OFF =  rpc.attrs.get('LAT_OFF')
+        self.HEIGHT_SCALE = rpc.attrs.get('HEIGHT_SCALE')
+        self.HEIGHT_OFF = rpc.attrs.get('HEIGHT_OFF')
+
+        self.SAMP_SCALE = rpc.attrs.get('SAMP_SCALE')
+        self.SAMP_OFF = rpc.attrs.get('SAMP_OFF')
+        self.LINE_SCALE = rpc.attrs.get('LINE_SCALE')
+        self.LINE_OFF = rpc.attrs.get('LINE_OFF')
 
 
     def update_RPC_ENVI(self, ENVI_input_file, ENVI_output_file):
@@ -156,6 +178,33 @@ class RPCmodel():
                           enumerate(self.SAMP_Num_coeff))
             fd.writelines("SAMP_DEN_COEFF_" + '{}'.format(i + 1) + ":\t" + '{:18.15e}'.format(coeff) + "\n" for i, coeff in
                           enumerate(self.SAMP_Den_coeff))
+
+    def to_geotiff_dict(self):
+        """
+        Return a dictionary storing the RPC coefficients as GeoTIFF tags.
+        This dictionary d can be written in a GeoTIFF file header with:
+            with rasterio.open("/path/to/image.tiff", "r+") as f:
+                f.update_tags(ns="RPC", **d)
+        """
+        d = {}
+        d["LINE_OFF"] = self.LINE_OFF
+        d["SAMP_OFF"] = self.SAMP_OFF
+        d["LAT_OFF"] = self.LAT_OFF
+        d["LONG_OFF"] = self.LONG_OFF
+        d["HEIGHT_OFF"] = self.HEIGHT_OFF
+
+        d["LINE_SCALE"] = self.LINE_SCALE
+        d["SAMP_SCALE"] = self.SAMP_SCALE
+        d["LAT_SCALE"] = self.LAT_SCALE
+        d["LONG_SCALE"] = self.LONG_SCALE
+        d["HEIGHT_SCALE"] = self.HEIGHT_SCALE
+
+        d["LINE_NUM_COEFF"] = " ".join([str(x) for x in self.LINE_Num_coeff])
+        d["LINE_DEN_COEFF"] = " ".join([str(x) for x in self.LINE_Den_coeff])
+        d["SAMP_NUM_COEFF"] = " ".join([str(x) for x in self.SAMP_Num_coeff])
+        d["SAMP_DEN_COEFF"] = " ".join([str(x) for x in self.SAMP_Den_coeff])
+
+        return {k: d[k] for k in sorted(d)}
 
     def compute_IJ(self, Lon, Lat, H):
         # Normalize the input coordinates
