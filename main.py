@@ -27,10 +27,13 @@ if __name__ == '__main__':
     t0 = ee.Date("2021-04-01")
     t1 = ee.Date("2021-09-01")
 
-    # UL Corner: 50.40038 6.257295
-    # LR Corner: 50.211006 5.740289
+    minLat, maxLat = float(f.attrs.get('Product_LRcorner_lat')), float(f.attrs.get('Product_ULcorner_lat'))
+    minLon, maxLon = float(f.attrs.get('Product_LRcorner_long')),float(f.attrs.get('Product_ULcorner_long'))
 
-    #S2download.s2download(data_folder / "S2_reference.tif", 5.90, 50.25, 6.15, 50.35, t0, t1)
+    minLattest = 5.90
+    print(minLon, minLat, maxLon, maxLat)
+    #S2download.s2download(data_folder / "S2_reference2.tif", 5.90, 50.25, 6.15, 50.35, t0, t1)
+    S2download.s2download(data_folder / "S2_reference_big.tif", minLon, minLat, maxLon, maxLat, t0, t1)
 
     #import sys
     #sys.exit()

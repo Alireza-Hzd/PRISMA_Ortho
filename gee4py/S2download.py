@@ -6,6 +6,58 @@ import shutil
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
 
 
+# Function to mosaic by date, orbit, etc
+def mosaicBy(imcol):
+    # imcol: An image collection
+    # returns: An image collection
+    # return the collection as a list of images (not an image collection)
+
+    imlist = imcol.toList(imcol.size());
+
+    # Get all the dates as list
+    #def fun1(im):
+    #    return ee.Image(im).date().format("YYYY-MM-dd");
+
+    all_dates = imlist.map(lambda im: ee.Image(im).date().format("YYYY-MM-dd"))
+
+    def fun2(im):
+        return ee.Image(im).get('SENSING_ORBIT_NUMBER')
+
+    all_orbits = imlist.map(fun2)
+
+    def fun3(im):
+        return ee.Image(im).get('SPACECRAFT_NAME')
+
+    all_spNames = imlist.map(fun3)
+
+    concat_all = all_dates.zip(all_orbits).zip(all_spNames)
+
+    def fun4(el):
+        return ee.List(el).flatten().join(" ")
+
+    concat_all = concat_all.map(fun4)
+
+    concat_unique = concat_all.distinct()
+
+    def fun5(d):
+        d1 = ee.String(d).split(" ")
+        date1 = ee.Date(d1.get(0));
+        orbit = ee.Number.parse(d1.get(1)).toInt();
+        spName = ee.String(d1.get(2));
+        im = imcol.filterDate(date1, date1.advance(1, "day")) \
+            .filterMetadata('SPACECRAFT_NAME', 'equals', spName) \
+            .filterMetadata('SENSING_ORBIT_NUMBER', 'equals', orbit) \
+            .mosaic()
+
+        im = im.copyProperties(imcol.first())
+
+        return im.set("system:time_start", date1.millis(), "system:date", date1.format("YYYY-MM-dd"), "system:id", d1)
+
+    mosaic_imlist = concat_unique.map(fun5)
+
+    return ee.ImageCollection(mosaic_imlist)
+
+
 def get_best_s2_image(aoi, start_date, end_date):
     # Import and filter S2 SR.
 
@@ -30,28 +82,39 @@ def get_best_s2_image(aoi, start_date, end_date):
         })
     }))
 
+    s2day = mosaicBy(imgs)
+
     # def image_poly(polygon):
     imgs = imgs.filter(ee.Filter.contains('.geo', aoi))
 
+    print("Number of images", imgs.size().getInfo())
+
+    s2day = s2day.filter(ee.Filter.contains('.geo', aoi))
+
+    print("Number of images daymosaic", s2day.size().getInfo())
+
+    imgs = s2day
+
     def get_clouds_per(img):
 
-        img = ee.Image(img.get('s2cloudless'))
+        cloud_mask = ee.Image(img.get('s2cloudless'))
 
-        eo = ee.Dictionary(img.reduceRegion(ee.Reducer.median(), aoi, 100))
+        eo = ee.Dictionary(cloud_mask.reduceRegion(ee.Reducer.median(), aoi, 100))
 
-        return ee.Feature(None, {'prob': eo.get('probability')})
+        return img.set("prob", eo.get('probability')) #ee.Feature(None, {'prob': eo.get('probability')})
 
-    print("Number of images", imgs.size().getInfo())
+
 
     if imgs.size().getInfo() > 0:
         # Get the best image id sorting respect to the cloud %
         results = imgs.map(get_clouds_per).sort('prob')
-        best_image_id = results.first().id().getInfo()
 
-        best_image = ee.Image("COPERNICUS/S2_SR/" + best_image_id).addBands(
-            ee.Image("COPERNICUS/S2_CLOUD_PROBABILITY/" + best_image_id))
+        #best_image_id = results.first().id().getInfo()
 
-        return best_image.unmask()
+        #best_image = ee.Image("COPERNICUS/S2_SR/" + best_image_id).addBands(
+        #    ee.Image("COPERNICUS/S2_CLOUD_PROBABILITY/" + best_image_id))
+
+        return results.first().unmask()
     else:
         return None
 
@@ -99,3 +162,8 @@ def s2download(filename, xmin, ymin, xmax, ymax, t0, t1):
             print("Done")
         else:
             print('Missing Tile')
+
+
+
+
+

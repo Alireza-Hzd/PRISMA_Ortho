@@ -128,7 +128,6 @@ class RPCmodel():
         self.LINE_SCALE = rpc.attrs.get('LINE_SCALE')
         self.LINE_OFF = rpc.attrs.get('LINE_OFF')
 
-
     def update_RPC_ENVI(self, ENVI_input_file, ENVI_output_file):
 
         with io.open(ENVI_input_file, mode="r", encoding="latin-1") as fd:
