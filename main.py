@@ -10,7 +10,6 @@ from gee4py import S2download
 import rpcsat
 
 import ee
-
 ee.Initialize()
 
 if __name__ == '__main__':
@@ -25,12 +24,11 @@ if __name__ == '__main__':
     print("LR Corner:", f.attrs.get('Product_LRcorner_lat'), f.attrs.get('Product_LRcorner_long'))
 
     t0 = ee.Date("2021-04-01")
-    t1 = ee.Date("2021-09-01")
+    t1 = ee.Date("2021-09-01") # TO ADD INPUT VARIABLE and MOVE IN S2 download function
 
     minLat, maxLat = float(f.attrs.get('Product_LRcorner_lat')), float(f.attrs.get('Product_ULcorner_lat'))
     minLon, maxLon = float(f.attrs.get('Product_LRcorner_long')),float(f.attrs.get('Product_ULcorner_long'))
 
-    minLattest = 5.90
     print(minLon, minLat, maxLon, maxLat)
     #S2download.s2download(data_folder / "S2_reference2.tif", 5.90, 50.25, 6.15, 50.35, t0, t1)
     S2download.s2download(data_folder / "S2_reference_big.tif", minLon, minLat, maxLon, maxLat, t0, t1)
@@ -51,6 +49,11 @@ if __name__ == '__main__':
 
     RPC_Pan = rpcsat.RPCmodel()
     RPC_Pan.read_from_PRISMA_h5(data_folder / file_name)
+
+    # HERE PROVIDE THE CSV FILE WITH THE GCPs TO REFINE THE RPCs
+    # GCPs_data = pd.read_csv(Path_GCP)
+    # RPC_Pan.GCP_refinement(GCPs_data)
+
     RPC_Pan.write_RPC("test_rpc_prisma_pan.txt")
 
     xsize = pan.shape[1]

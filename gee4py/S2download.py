@@ -82,41 +82,39 @@ def get_best_s2_image(aoi, start_date, end_date):
         })
     }))
 
+    # add the probability mask from s2cloudless to the s2 bands
+    def add_cloud_probability(img):
+        cloud_mask = ee.Image(img.get('s2cloudless'))
+        return img.addBands(cloud_mask)
+
+    imgs = imgs.map(add_cloud_probability)
+
+    print("Number of S2 Granules", imgs.size().getInfo())
+
     s2day = mosaicBy(imgs)
 
-    # def image_poly(polygon):
-    imgs = imgs.filter(ee.Filter.contains('.geo', aoi))
-
-    print("Number of images", imgs.size().getInfo())
-
-    s2day = s2day.filter(ee.Filter.contains('.geo', aoi))
-
-    print("Number of images daymosaic", s2day.size().getInfo())
+    print("Number of S2 acquisitions", s2day.size().getInfo())
 
     imgs = s2day
 
+    # Function to count the number of cloud free pixel with the reference AOI -> assume 50% th of cloud probability
     def get_clouds_per(img):
 
         cloud_mask = ee.Image(img.get('s2cloudless'))
 
-        eo = ee.Dictionary(cloud_mask.reduceRegion(ee.Reducer.median(), aoi, 100))
+        eo = ee.Dictionary(cloud_mask.reduceRegion(ee.Reducer.fixedHistogram(0, 100, 2), aoi, 100))
 
-        return img.set("prob", eo.get('probability')) #ee.Feature(None, {'prob': eo.get('probability')})
+        cloudfree_px = ee.Array(ee.Array(eo.get('probability')).toList().get(0)).toList().get(1)
 
-
+        return img.set("prob", cloudfree_px)
 
     if imgs.size().getInfo() > 0:
         # Get the best image id sorting respect to the cloud %
-        results = imgs.map(get_clouds_per).sort('prob')
-
-        #best_image_id = results.first().id().getInfo()
-
-        #best_image = ee.Image("COPERNICUS/S2_SR/" + best_image_id).addBands(
-        #    ee.Image("COPERNICUS/S2_CLOUD_PROBABILITY/" + best_image_id))
-
+        results = imgs.map(get_clouds_per).sort('prob', False)
         return results.first().unmask()
     else:
         return None
+
 
 def s2download(filename, xmin, ymin, xmax, ymax, t0, t1):
     date_t0 = ee.Date(t0)

@@ -3,13 +3,7 @@ import numpy as np
 from pathlib import Path
 from matplotlib import pyplot as plt
 
-
 import rasterio
-
-
-
-
-
 
 data_folder = "/Volumes/Samsung_T5/Satellite_Imagery/PRISMA/"
 
