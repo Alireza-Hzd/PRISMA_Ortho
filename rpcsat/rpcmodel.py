@@ -109,7 +109,7 @@ class RPCmodel():
 
         f = h5py.File(h5_file, 'r')
 
-        rpc = f['HDFEOS']['SWATHS']['PRS_L2C_PCO']['Geocoding Model']
+        rpc = f['HDFEOS']['SWATHS']['PRS_L2C_HCO']['Geocoding Model']
 
         self.SAMP_Num_coeff = rpc.attrs.get('SAMP_NUM_COEFF')
         self.SAMP_Den_coeff = rpc.attrs.get('SAMP_DEN_COEFF')
