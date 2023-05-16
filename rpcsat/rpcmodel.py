@@ -103,13 +103,16 @@ class RPCmodel():
         self.LINE_SCALE = np.double(child.find("LINE_SCALE").text)
         self.LINE_OFF = np.double(child.find("LINE_OFF").text)
 
-    def read_from_PRISMA_h5(self, h5_file):
+    def read_from_PRISMA_h5(self, h5_file, panchromatic=False):
 
         sensor = "PRISMA"
 
         f = h5py.File(h5_file, 'r')
 
-        rpc = f['HDFEOS']['SWATHS']['PRS_L2C_HCO']['Geocoding Model']
+        if panchromatic:
+            rpc = f['HDFEOS']['SWATHS']['PRS_L2C_PCO']['Geocoding Model']
+        else:
+            rpc = f['HDFEOS']['SWATHS']['PRS_L2C_HCO']['Geocoding Model']
 
         self.SAMP_Num_coeff = rpc.attrs.get('SAMP_NUM_COEFF')
         self.SAMP_Den_coeff = rpc.attrs.get('SAMP_DEN_COEFF')
