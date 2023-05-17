@@ -25,6 +25,8 @@ class PrismaData:
             self.RPC_Pan = rpcsat.RPCmodel()
             self.RPC_Pan.read_from_PRISMA_h5(self.filepath, panchromatic=True)
 
+            self.startTime = h5file.attrs.get('Product_StartTime')
+
         self.hyp_cube = None
         self.pan_band = None
 
