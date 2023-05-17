@@ -13,6 +13,7 @@ if __name__ == '__main__':
     output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
     dem_file = '/Volumes/Samsung_T5/Satellite_Imagery/PRISMA/dsm_totale.tif'
 
+
     # Initialize a PrismaData object
     img1 = PrismaData(data_folder / file_name)
 
