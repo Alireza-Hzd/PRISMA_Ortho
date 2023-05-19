@@ -8,6 +8,7 @@ import rpcsat
 from sklearn.model_selection import KFold
 from pathlib import Path
 from osgeo import gdal
+from datetime import datetime
 
 
 class PrismaData:
@@ -26,6 +27,13 @@ class PrismaData:
             self.RPC_Pan.read_from_PRISMA_h5(self.filepath, panchromatic=True)
 
             self.startTime = h5file.attrs.get('Product_StartTime')
+            self.date = datetime.strptime(str(self.startTime).split("T")[0].split("'")[-1], "%Y-%m-%d")
+
+            self.vnir_central_wavelengths = h5file.attrs['List_Cw_Vnir']
+            self.vnir_bands_amplitude = h5file.attrs['List_Fwhm_Vnir']
+
+            self.swir_central_wavelengths = h5file.attrs['List_Cw_Swir']
+            self.swir_bands_amplitude = h5file.attrs['List_Fwhm_Swir']
 
         self.hyp_cube = None
         self.pan_band = None

@@ -116,52 +116,32 @@ def get_best_s2_image(aoi, start_date, end_date):
         return None
 
 
-def s2download(filename, xmin, ymin, xmax, ymax, t0, t1):
+def s2download(filename, xmin, ymin, xmax, ymax, t0, t1, crs="EPSG:4326", inbands=["B8"]):
     date_t0 = ee.Date(t0)
     data_t1 = ee.Date(t1)
-    # Generate the desired image from the given reference tile.
-    # point = ee.Geometry.Point(p)
-    # region = point.buffer(127.8*10).bounds(maxError=0.1, proj=CRS)
 
     region = ee.Geometry.Rectangle(xmin, ymin, xmax, ymax) #list(point[1]['geometry'].exterior.coords)).buffer(-13.0, proj=CRS)
 
-    # image = (dataset
-    #         .filterBounds(region)
-    #        .filterDate(date, date.advance(1,'month'))
-    #         .select(inBands)
-    #         .median()
-    #        .clip(region))
-
     image = get_best_s2_image(region, date_t0, data_t1)
 
-    CRS = "EPSG:4326"
-    # S2 relevant bands
-    inBands = ["B8"]
-
-    if image != None:
-        image = image.select(inBands).clip(region)
+    if image is not None:
+        image = image.select(inbands).clip(region)
 
         if len(image.bandNames().getInfo()) > 0:
 
             # Fetch the URL from which to download the image.
-            url = image.getDownloadURL({'scale': 10, 'region': region, 'format': "GEO_TIFF", 'crs': CRS})
-            # url = image.getThumbURL({
-            ##    'dimensions': '256x256',
-            #   'format': 'jpg'})
+            url = image.getDownloadURL({'scale': 10, 'region': region, 'format': "GEO_TIFF", 'crs': crs})
 
             # Handle downloading the actual pixels.
             r = requests.get(url, stream=True)
             if r.status_code != 200:
                 r.raise_for_status()
 
-            #filename = 'img_%05d_S2_%s_%02d.tif' % (point[0] + N0, point[1]['year'], month)
             with open(filename, 'wb') as out_file:
                 shutil.copyfileobj(r.raw, out_file)
+
             print("Done")
         else:
             print('Missing Tile')
-
-
-
 
 

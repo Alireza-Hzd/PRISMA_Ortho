@@ -2,6 +2,7 @@
 from pathlib import Path
 import pandas as pd
 from PRISMAtoolbox import PrismaData
+from datetime import datetime, timedelta
 from gee4py import S2download
 
 
@@ -25,12 +26,19 @@ if __name__ == '__main__':
 
     # Use the GEE API to download the best cloud free Sentinel-2 image covering the PRISMA img
 
-    print(img1.startTime)
-    t0 = "2021-04-01"
-    t1 = "2021-09-01"
+    t0 = img1.date + timedelta(weeks=-4)
+    t1 = img1.date + timedelta(weeks=+4)
 
-    #S2download.s2download(data_folder / "S2_reference_big2.tif", img1.minLon, img1.minLat, img1.maxLon, img1.maxLat, t0, t1)
+    print(t0, t1)
 
+    print(img1.vnir_central_wavelengths)
+    print(img1.vnir_bands_amplitude)
+
+    print(img1.swir_central_wavelengths)
+    print(img1.swir_bands_amplitude)
+
+    #S2download.s2download(data_folder / "S2_reference_test_crs_bands.tif", img1.minLon, img1.minLat, img1.maxLon,
+    #                      img1.maxLat, t0, t1, crs="EPSG:32631")
 
 """
     
