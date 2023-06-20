@@ -35,6 +35,13 @@ class PrismaData:
             self.swir_central_wavelengths = h5file.attrs['List_Cw_Swir']
             self.swir_bands_amplitude = h5file.attrs['List_Fwhm_Swir']
 
+            self.L2ScaleVnirMin = h5file.attrs['L2ScaleVnirMin']
+            self.L2ScaleVnirMax = h5file.attrs['L2ScaleVnirMax']
+
+            self.L2ScaleSwirMin = h5file.attrs['L2ScaleSwirMin']
+            self.L2ScaleSwirMax = h5file.attrs['L2ScaleSwirMax']
+
+
         self.hyp_cube = None
         self.pan_band = None
 
@@ -45,6 +52,8 @@ class PrismaData:
             SWIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/SWIR_Cube'][()]
             VNIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/VNIR_Cube'][()]
 
+
+
             # read latitude and longitude contents
             lat = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Geolocation Fields/Latitude'][()]
 
@@ -52,6 +61,11 @@ class PrismaData:
             print("SWIRcube.shape", SWIRcube.shape)
             print("VNIRcube.shape", VNIRcube.shape)
             #print("lat.shape", lat.shape)
+
+            # ADD the DN to reflectance conversion
+            VNIRcube = self.L2ScaleVnirMin + (VNIRcube * (self.L2ScaleVnirMax-self.L2ScaleVnirMin))/65535
+
+            SWIRcube = self.L2ScaleSwirMin + (SWIRcube * (self.L2ScaleSwirMax - self.L2ScaleSwirMin))/65535
 
             # create a list from VNIR and SWIR cube values
             listBand = []
@@ -65,7 +79,7 @@ class PrismaData:
                     listBand.append(element)
 
             # convert list with values to a numpy array
-            data = np.array(listBand, dtype=np.uint16)
+            data = np.array(listBand, dtype=np.float16)
 
             # checks array shape
             print("data.shape", data.shape)
@@ -75,6 +89,9 @@ class PrismaData:
             print("reshaped data.shape", dataReshaped.shape)
 
             self.hyp_cube = dataReshaped
+
+    #def get_spectral_index(self, indxb1, inxb2):
+    #    return
 
     def get_hyp_cube(self):
         if self.hyp_cube is None:
