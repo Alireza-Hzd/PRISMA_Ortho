@@ -28,7 +28,7 @@ if __name__ == '__main__':
     GCPs_img1 = pd.read_csv(data_folder / gcps_file_name, delimiter=";")
 
     # Orthorectify the Prisma Hypercube using GCPs refined RPC model
-    #img1.orthorectify_hyp_cube(output_file, dem_file, GCPs_data=GCPs_img1)
+    img1.orthorectify_hyp_cube(output_file, dem_file, GCPs_data=GCPs_img1)
 
 '''
     # Use the GEE API to download the best cloud free Sentinel-2 image covering the PRISMA img
