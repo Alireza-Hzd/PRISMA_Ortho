@@ -256,7 +256,7 @@ class RPCmodel():
 
         for i in np.arange(data.shape[0]):
 
-            row_rpc, col_rpc = self.compute_IJ(data["Lon"][i], data["Lat"][i], data["H"][i]-geoid)
+            row_rpc, col_rpc = self.compute_IJ(data[Lon][i], data[Lat][i], data[H][i]-geoid)
 
             Resid_Row.append(data["Row"][i] - row_rpc)
             Resid_Col.append(data["Col"][i] - col_rpc)
