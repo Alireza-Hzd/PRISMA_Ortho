@@ -25,7 +25,7 @@ if __name__ == '__main__':
     img1 = PrismaData(data_folder / file_name)
 
     # Read GCPs csv file using Pandas
-    GCPs_img1 = pd.read_csv(data_folder / gcps_file_name, delimiter=";")
+    GCPs_img1 = pd.read_csv(gcps_file_name, delimiter=";")
 
     # Orthorectify the Prisma Hypercube using GCPs refined RPC model
     img1.orthorectify_hyp_cube(output_file, dem_file, GCPs_data=GCPs_img1)
