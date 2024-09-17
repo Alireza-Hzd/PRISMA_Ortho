@@ -15,11 +15,11 @@ GOOD_MATCH_PERCENT = 0.15
 
 if __name__ == '__main__':
 
-    data_folder = Path("/Volumes/Samsung_T5/Satellite_Imagery/PRISMA")
-    file_name = "PRS_L2C_STD_20200420104916_20200420104920_0001.he5"
-    gcps_file_name = "GCP.csv"
+    data_folder = Path("/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/PRISMA_L2C")
+    file_name = "PRS_L2C_STD_20220429095455_20220429095459_0001.he5"
+    gcps_file_name = "/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/vector/gcp_foggia_32633_dsmvalues/gcptest.csv"
     output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
-    dem_file = '/Volumes/Samsung_T5/Satellite_Imagery/PRISMA/dsm_totale.tif'
+    dem_file = '/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/DSM/dsm_foggia_32633.tif'
 
     # Initialize a PrismaData object
     img1 = PrismaData(data_folder / file_name)
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # Orthorectify the Prisma Hypercube using GCPs refined RPC model
     #img1.orthorectify_hyp_cube(output_file, dem_file, GCPs_data=GCPs_img1)
 
-
+'''
     # Use the GEE API to download the best cloud free Sentinel-2 image covering the PRISMA img
 
     t0 = img1.date + timedelta(weeks=-4)
@@ -129,3 +129,4 @@ if __name__ == '__main__':
     plt.show()
 
 """
+'''
