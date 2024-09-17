@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from pathlib import Path
 from PRISMAtoolbox import PrismaData
 from datetime import datetime, timedelta
-from gee4py import S2download
+#from gee4py import S2download
 
 MAX_FEATURES = 2000
 GOOD_MATCH_PERCENT = 0.15
