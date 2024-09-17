@@ -79,7 +79,7 @@ class PrismaData:
                     listBand.append(element)
 
             # convert list with values to a numpy array
-            data = np.array(listBand, dtype=np.float16)
+            data = np.array(listBand, dtype=np.float32)
 
             # checks array shape
             print("data.shape", data.shape)
