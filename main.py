@@ -1,4 +1,4 @@
-# This is a Python script for automatically correct the PRISMA RPC using GCPs from Sentinel-2
+# This is a Python script for automatically correct the PRISMA RPC using GCPs
 import numpy as np
 import pandas as pd
 import cv2
