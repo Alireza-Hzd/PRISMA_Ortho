@@ -19,7 +19,7 @@ if __name__ == '__main__':
     file_name = "PRS_L2C_STD_20220429095455_20220429095459_0001.he5"
     gcps_file_name = "/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/vector/gcp_foggia_32633_dsmvalues/gcptest.csv"
     output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
-    dem_file = '/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/DSM/dsm_foggia_32633.tif'
+    dem_file = '/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/DSM/Foggia_DEM_WGS84.tif'
 
     # Initialize a PrismaData object
     img1 = PrismaData(data_folder / file_name)
