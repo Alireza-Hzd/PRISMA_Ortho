@@ -51,6 +51,8 @@ class PrismaData:
 
             SWIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/SWIR_Cube'][()]
             VNIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/VNIR_Cube'][()]
+            VNIRcube = VNIRcube[:,::-1,:]
+            SWIRcube = SWIRcube[:,::-1,:]
 
 
 
