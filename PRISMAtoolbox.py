@@ -68,6 +68,16 @@ class PrismaData:
             VNIRcube = self.L2ScaleVnirMin + (VNIRcube * (self.L2ScaleVnirMax-self.L2ScaleVnirMin))/65535
 
             SWIRcube = self.L2ScaleSwirMin + (SWIRcube * (self.L2ScaleSwirMax - self.L2ScaleSwirMin))/65535
+            # Adding band names
+            f = h5f
+            # SWIR Channel SWIR: 920 – 2505 nm
+            SWIR = f['HDFEOS']['SWATHS']['PRS_L2C_HCO']['Data Fields']['SWIR_Cube']
+            # VNIR Channel VNIR: 400 – 1010 nm
+            VNIR = f['HDFEOS']['SWATHS']['PRS_L2C_HCO']['Data Fields']['VNIR_Cube']
+
+
+            freq_VNIR = f.attrs.get('List_Cw_Vnir')[::-1]
+            freq_SWIR = f.attrs.get('List_Cw_Swir')[::-1]
 
             # create a list from VNIR and SWIR cube values
             listBand = []
