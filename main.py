@@ -9,17 +9,21 @@ from pathlib import Path
 from PRISMAtoolbox import PrismaData
 from datetime import datetime, timedelta
 #from gee4py import S2download
-
+import os
 MAX_FEATURES = 2000
 GOOD_MATCH_PERCENT = 0.15
 
 if __name__ == '__main__':
+  
+    R_name = os.environ['R_NAME']
+    GCP_adress = os.environ['GCP_ADRESS']
+    DEM_adress = os.environ['DEM_ADRESS']
 
     data_folder = Path("/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/Foggia/PRISMA_L2C")
-    file_name = "PRS_L2C_STD_20220429095455_20220429095459_0001.he5"
-    gcps_file_name = "/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/vector/gcp_foggia_32633_dsmvalues/gcptest.csv"
+    file_name = R_name
+    gcps_file_name = GCP_adress
     output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
-    dem_file = '/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/DSM/TDM1_EDEM_10_N41E015_EDEM_EGM_EPSG_4326.tif'
+    dem_file = DEM_adress
 
     # Initialize a PrismaData object
     img1 = PrismaData(data_folder / file_name)
