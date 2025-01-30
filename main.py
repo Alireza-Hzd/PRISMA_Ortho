@@ -9,12 +9,13 @@ from pathlib import Path
 from PRISMAtoolbox import PrismaData
 from datetime import datetime, timedelta
 #from gee4py import S2download
+#Adding os to read file while cloning
 import os
 MAX_FEATURES = 2000
 GOOD_MATCH_PERCENT = 0.15
 
 if __name__ == '__main__':
-  
+#Reading the defined path from the colab where it is running
     R_name = os.environ['R_NAME']
     GCP_adress = os.environ['GCP_ADRESS']
     DEM_adress = os.environ['DEM_ADRESS']
