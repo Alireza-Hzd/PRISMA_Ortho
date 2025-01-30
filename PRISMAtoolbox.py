@@ -51,6 +51,7 @@ class PrismaData:
 
             SWIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/SWIR_Cube'][()]
             VNIRcube = h5f['HDFEOS/SWATHS/PRS_L2C_HCO/Data Fields/VNIR_Cube'][()]
+            #Reversing the bands to match the ordinal wavelength
             VNIRcube = VNIRcube[:,::-1,:]
             SWIRcube = SWIRcube[:,::-1,:]
 
