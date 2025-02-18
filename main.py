@@ -19,11 +19,12 @@ if __name__ == '__main__':
     R_name = os.environ['R_NAME']
     GCP_adress = os.environ['GCP_ADRESS']
     DEM_adress = os.environ['DEM_ADRESS']
-
+    OUT_ADRESS = os.environ['OUT_ADRESS']
     data_folder = Path("/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/Foggia/PRISMA_L2C")
     file_name = R_name
     gcps_file_name = GCP_adress
-    output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
+    output_file = OUT_ADRESS
+#    output_file = data_folder / (file_name.split('.')[0] + '_ortho_gcp.tif')
     dem_file = DEM_adress
 
     # Initialize a PrismaData object
