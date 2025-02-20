@@ -20,7 +20,7 @@ if __name__ == '__main__':
     GCP_adress = os.environ['GCP_ADRESS']
     DEM_adress = os.environ['DEM_ADRESS']
     OUT_ADRESS = os.environ['OUT_ADRESS']
-    data_folder = Path("/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/Foggia/PRISMA_L2C")
+#    data_folder = Path("/content/drive/Shareddrives/GRAW_Sapienza_Team/PRISMA_IMAGES/Foggia/Foggia/PRISMA_L2C")
     file_name = R_name
     gcps_file_name = GCP_adress
     output_file = OUT_ADRESS
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     dem_file = DEM_adress
 
     # Initialize a PrismaData object
-    img1 = PrismaData(data_folder / file_name)
+    img1 = PrismaData(R_name)
 
     # Read GCPs csv file using Pandas
     GCPs_img1 = pd.read_csv(gcps_file_name, delimiter=";")
